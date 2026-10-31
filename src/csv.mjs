@@ -1,7 +1,10 @@
 // csv-lens - first cut. The public suite is green; the contract is README.md.
 
+const round = (n) => Math.round(n * 1e6) / 1e6;
+
 export function parseCsv(text) {
   const lines = text.split("\n").filter((line) => line.length > 0);
+  if (lines.length === 0) return [];
   const header = lines.shift().split(",");
   return lines.map((line) => {
     const cells = line.split(",");
@@ -24,9 +27,9 @@ export function summarise(records, { valueKey, groupKey } = {}) {
     out.groups[group].count += 1;
     out.groups[group].total += value;
   }
-  out.mean = out.count === 0 ? 0 : out.total / out.count;
+  out.mean = out.count === 0 ? 0 : round(out.total / out.count);
   for (const group of Object.values(out.groups)) {
-    group.mean = group.count === 0 ? 0 : group.total / group.count;
+    group.mean = group.count === 0 ? 0 : round(group.total / group.count);
   }
   return out;
 }
